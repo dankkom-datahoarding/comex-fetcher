@@ -118,6 +118,8 @@ def exp(year: int, dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"exp_{year}_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -135,6 +137,8 @@ def imp(year: int, dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"imp_{year}_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -152,6 +156,8 @@ def exp_mun(year: int, dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"exp-mun_{year}_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -169,6 +175,8 @@ def imp_mun(year: int, dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"imp-mun_{year}_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -186,6 +194,8 @@ def exp_nbm(year: int, dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"exp-nbm_{year}_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -203,6 +213,8 @@ def imp_nbm(year: int, dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"imp-nbm_{year}_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -218,6 +230,8 @@ def exp_completa(dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"exp-completa_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -233,6 +247,8 @@ def imp_completa(dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"imp-completa_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -248,6 +264,8 @@ def exp_mun_completa(dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"exp-mun-completa_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -263,6 +281,8 @@ def imp_mun_completa(dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"imp-mun-completa_{metadata['last_modified']:%Y%m%d}.csv"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -278,6 +298,8 @@ def exp_repetro(dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"exp-repetro_{metadata['last_modified']:%Y%m%d}.xlsx"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
 
 
@@ -293,4 +315,6 @@ def imp_repetro(dirpath: pathlib.Path):
     metadata = get_file_metadata(url)
     filename = f"imp-repetro_{metadata['last_modified']:%Y%m%d}.xlsx"
     filepath = dirpath / filename
+    if filepath.exists():
+        return
     download_file(url, filepath)
