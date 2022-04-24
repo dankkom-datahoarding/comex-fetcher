@@ -1,7 +1,7 @@
 import argparse
 import pathlib
 
-from secex_comex import fetcher, tables
+from comex_fetcher import fetcher, tables
 
 
 def download_tables(destdir: pathlib.Path):

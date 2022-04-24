@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(
-    name="secex-comex",
+    name="comex-fetcher",
     version="0.0.1",
     author="Daniel Komesu",
     author_email="danielkomesu@gmail.com",
