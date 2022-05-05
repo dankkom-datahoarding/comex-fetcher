@@ -10,7 +10,7 @@ setuptools.setup(
     version="0.0.1",
     author="Daniel Komesu",
     author_email="danielkomesu@gmail.com",
-    description="Downloads the data from the SECEX website.",
+    description="Fetcher of raw data from the SECEX website.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     requires=["requests"],
