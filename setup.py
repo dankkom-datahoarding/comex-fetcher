@@ -13,7 +13,7 @@ setuptools.setup(
     description="Fetcher of raw data from the SECEX website.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    requires=["requests"],
+    requires=["requests", "tqdm"],
     classifiers=[
         "Programming Language :: Python :: 3",
     ],
