@@ -7,6 +7,7 @@ import time
 
 import requests
 import urllib3
+from tqdm import tqdm
 
 from .tables import get_url
 
@@ -57,15 +58,22 @@ def download_file(url, filepath: pathlib.Path, retry=3, blocksize=1024):
     for x in range(retry):
         try:
             r = requests.get(url, verify=False)
+            progress = tqdm(
+                total=int(r.headers.get("Content-Length", 0)),
+                unit="B",
+                unit_scale=True,
+                desc=filepath.name,
+            )
             with open(filepath, "wb") as f:
-                for chunk in r.iter_content(blocksize):
+                for chunk in r.iter_content(chunk_size=blocksize):
                     f.write(chunk)
+                    progress.update(len(chunk))
+            progress.close()
+            break
         except requests.exceptions.ConnectionError:
             time.sleep(3)
             if x == retry - 1:
                 raise
-        else:
-            break
 
 
 def table(table_name: str, dirpath: pathlib.Path):
