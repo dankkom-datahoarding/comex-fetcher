@@ -1,7 +1,10 @@
 import argparse
 import pathlib
+from datetime import date
 
 from comex_fetcher import fetcher, tables
+
+CURRENT_YEAR = date.today().year
 
 
 def download_tables(destdir: pathlib.Path):
@@ -11,13 +14,13 @@ def download_tables(destdir: pathlib.Path):
 
 
 def download_trade(destdir: pathlib.Path):
-    for year in range(1997, 2023):
+    for year in range(1997, CURRENT_YEAR + 1):
         fetcher.exp(year, destdir / "exp")
         fetcher.imp(year, destdir / "imp")
 
 
 def download_trade_mun(destdir: pathlib.Path):
-    for year in range(1997, 2023):
+    for year in range(1997, CURRENT_YEAR + 1):
         fetcher.exp_mun(year, destdir / "exp-mun")
         fetcher.imp_mun(year, destdir / "imp-mun")
 
