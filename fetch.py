@@ -19,10 +19,20 @@ def download_trade(destdir: pathlib.Path):
         fetcher.imp(year, destdir / "imp")
 
 
+def download_trade_completa(destdir: pathlib.Path):
+    fetcher.exp_completa(destdir / "exp-completa")
+    fetcher.imp_completa(destdir / "imp-completa")
+
+
 def download_trade_mun(destdir: pathlib.Path):
     for year in range(1997, CURRENT_YEAR + 1):
         fetcher.exp_mun(year, destdir / "exp-mun")
         fetcher.imp_mun(year, destdir / "imp-mun")
+
+
+def download_trade_mun_completa(destdir: pathlib.Path):
+    fetcher.exp_mun_completa(destdir / "exp-mun-completa")
+    fetcher.imp_mun_completa(destdir / "imp-mun-completa")
 
 
 def download_trade_nbm(destdir: pathlib.Path):
@@ -60,7 +70,9 @@ def get_parser():
             "all",
             "tables",
             "trade",
+            "trade-completa",
             "trade-mun",
+            "trade-mun-completa",
             "trade-nbm",
             "repetro",
         ],
@@ -81,8 +93,12 @@ def main():
             download_tables(args.output)
         case "trade":
             download_trade(args.output)
+        case "trade-completa":
+            download_trade_completa(args.output)
         case "trade-mun":
             download_trade_mun(args.output)
+        case "trade-mun-completa":
+            download_trade_mun_completa(args.output)
         case "trade-nbm":
             download_trade_nbm(args.output)
         case "repetro":
