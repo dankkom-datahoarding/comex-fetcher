@@ -5,13 +5,10 @@ import datetime as dt
 import pathlib
 import time
 
-import requests
-import urllib3
+import httpx
 from tqdm import tqdm
 
 from .tables import get_url
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def get_file_metadata(url):
@@ -22,7 +19,7 @@ def get_file_metadata(url):
     url: str
         The file's URL
     """
-    r = requests.head(url, verify=False)
+    r = httpx.head(url, verify=False)
     file_size = int(r.headers.get("Content-Length", 0))
     default_last_modified_string = "Thu, 01 Jan 1970 00:00:00 GMT"
     last_modified = dt.datetime.strptime(
@@ -35,7 +32,7 @@ def get_file_metadata(url):
     }
 
 
-def download_file(url, filepath: pathlib.Path, retry=3, blocksize=1024):
+def download_file(url, filepath: pathlib.Path, client: httpx.Client, retry=3, blocksize=1024):
     """Downloads the file in `url` and saves it in `path`
 
     Parameters
@@ -44,6 +41,8 @@ def download_file(url, filepath: pathlib.Path, retry=3, blocksize=1024):
         The resource's URL to download
     filepath: str
         The destination path of downloaded file
+    client: httpx.Client
+        Connection HTTP session
     retry: int [default=3]
         Number of retries until raising exception
     blocksize: int [default=1024]
@@ -57,26 +56,26 @@ def download_file(url, filepath: pathlib.Path, retry=3, blocksize=1024):
 
     for x in range(retry):
         try:
-            r = requests.get(url, verify=False)
-            progress = tqdm(
-                total=int(r.headers.get("Content-Length", 0)),
-                unit="B",
-                unit_scale=True,
-                desc=filepath.name,
-            )
-            with open(filepath, "wb") as f:
-                for chunk in r.iter_content(chunk_size=blocksize):
-                    f.write(chunk)
-                    progress.update(len(chunk))
-            progress.close()
-            break
-        except requests.exceptions.ConnectionError:
+            with client.stream("GET", url) as r:
+                progress = tqdm(
+                    total=int(r.headers.get("Content-Length", 0)),
+                    unit="B",
+                    unit_scale=True,
+                    desc=filepath.name,
+                )
+                with open(filepath, "wb") as f:
+                    for chunk in r.iter_bytes(blocksize):
+                        f.write(chunk)
+                        progress.update(len(chunk))
+                progress.close()
+                break
+        except ConnectionError:
             time.sleep(3)
             if x == retry - 1:
                 raise
 
 
-def table(table_name: str, dirpath: pathlib.Path):
+def table(table_name: str, dirpath: pathlib.Path, client: httpx.Client):
     """Downloads a table
 
     Parameters
@@ -92,10 +91,10 @@ def table(table_name: str, dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def tabelas_auxiliares(dirpath: pathlib.Path):
+def tabelas_auxiliares(dirpath: pathlib.Path, client: httpx.Client):
     """Downloads tabelas-auxiliares file
 
     Parameters
@@ -109,10 +108,10 @@ def tabelas_auxiliares(dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def exp(year: int, dirpath: pathlib.Path):
+def exp(year: int, dirpath: pathlib.Path, client: httpx.Client):
     """Downloads exp file
 
     Parameters
@@ -128,10 +127,10 @@ def exp(year: int, dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def imp(year: int, dirpath: pathlib.Path):
+def imp(year: int, dirpath: pathlib.Path, client: httpx.Client):
     """Downloads imp file
 
     Parameters
@@ -147,10 +146,10 @@ def imp(year: int, dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def exp_mun(year: int, dirpath: pathlib.Path):
+def exp_mun(year: int, dirpath: pathlib.Path, client: httpx.Client):
     """Downloads exp-mun file
 
     Parameters
@@ -166,10 +165,10 @@ def exp_mun(year: int, dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def imp_mun(year: int, dirpath: pathlib.Path):
+def imp_mun(year: int, dirpath: pathlib.Path, client: httpx.Client):
     """Downloads imp-mun file
 
     Parameters
@@ -185,10 +184,10 @@ def imp_mun(year: int, dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def exp_nbm(year: int, dirpath: pathlib.Path):
+def exp_nbm(year: int, dirpath: pathlib.Path, client: httpx.Client):
     """Downloads exp-nbm file
 
     Parameters
@@ -204,10 +203,10 @@ def exp_nbm(year: int, dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def imp_nbm(year: int, dirpath: pathlib.Path):
+def imp_nbm(year: int, dirpath: pathlib.Path, client: httpx.Client):
     """Downloads imp-nbm file
 
     Parameters
@@ -223,10 +222,10 @@ def imp_nbm(year: int, dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def exp_completa(dirpath: pathlib.Path):
+def exp_completa(dirpath: pathlib.Path, client: httpx.Client):
     """Downloads the file with complete data of exp-completa
 
     Parameters
@@ -240,10 +239,10 @@ def exp_completa(dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def imp_completa(dirpath: pathlib.Path):
+def imp_completa(dirpath: pathlib.Path, client: httpx.Client):
     """Downloads the file with complete data of imp-completa
 
     Parameters
@@ -257,10 +256,10 @@ def imp_completa(dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def exp_mun_completa(dirpath: pathlib.Path):
+def exp_mun_completa(dirpath: pathlib.Path, client: httpx.Client):
     """Downloads the file with complete data of exp-mun-completa
 
     Parameters
@@ -274,10 +273,10 @@ def exp_mun_completa(dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def imp_mun_completa(dirpath: pathlib.Path):
+def imp_mun_completa(dirpath: pathlib.Path, client: httpx.Client):
     """Downloads the file with complete data of imp-mun-completa
 
     Parameters
@@ -291,10 +290,10 @@ def imp_mun_completa(dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def exp_repetro(dirpath: pathlib.Path):
+def exp_repetro(dirpath: pathlib.Path, client: httpx.Client):
     """Downloads the file with complete data of exp_repetro
 
     Parameters
@@ -308,10 +307,10 @@ def exp_repetro(dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
 
 
-def imp_repetro(dirpath: pathlib.Path):
+def imp_repetro(dirpath: pathlib.Path, client: httpx.Client):
     """Downloads the file with complete data of imp_repetro
 
     Parameters
@@ -325,4 +324,4 @@ def imp_repetro(dirpath: pathlib.Path):
     filepath = dirpath / filename
     if filepath.exists():
         return
-    download_file(url, filepath)
+    download_file(url, filepath, client)
