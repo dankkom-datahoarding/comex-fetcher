@@ -56,7 +56,7 @@ def download_file(url, filepath: pathlib.Path, client: httpx.Client, retry=3, bl
 
     for x in range(retry):
         try:
-            with client.stream("GET", url) as r:
+            with client.stream("GET", url, timeout=300) as r:
                 progress = tqdm(
                     total=int(r.headers.get("Content-Length", 0)),
                     unit="B",
