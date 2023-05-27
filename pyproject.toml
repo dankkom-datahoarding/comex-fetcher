@@ -1,6 +1,6 @@
 [project]
 name = "comex-fetcher"
-version = "0.0.1"
+version = "0.1.0"
 description = "Fetcher of raw data from the SECEX website."
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
