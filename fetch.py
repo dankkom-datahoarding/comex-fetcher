@@ -4,7 +4,7 @@ from datetime import date
 
 import httpx
 
-from comex_fetcher import fetcher, storage, tables
+from comex_fetcher import fetcher, tables
 
 CURRENT_YEAR = date.today().year
 
@@ -31,15 +31,12 @@ def download_trade(data_dir: pathlib.Path, client: httpx.Client):
 
 def download_trade_completa(data_dir: pathlib.Path, client: httpx.Client):
     for dataset in tables.ARQUIVO_UNICO:
-        url = tables.get_url(dataset)
-        metadata = fetcher.get_file_metadata(url)
-        filepath = storage.get_trade_completa_filepath(
-            dataset=dataset,
-            modified=metadata["last_modified"],
-        )
-        if filepath.exists():
-            continue
-        fetcher.download_file(url, filepath, client)
+        fetcher.trade_unique(data_dir=data_dir, dataset=dataset, client=client)
+
+
+def download_trade_validacao(data_dir: pathlib.Path, client: httpx.Client):
+    for dataset in tables.TOTAIS_PARA_VALIDACAO:
+        fetcher.trade_unique(data_dir=data_dir, dataset=dataset, client=client)
 
 
 def download_repetro(data_dir: pathlib.Path, client: httpx.Client):
@@ -51,6 +48,8 @@ def download_all(data_dir: pathlib.Path, client: httpx.Client):
     download_tables(data_dir, client)
     download_trade(data_dir, client)
     download_repetro(data_dir, client)
+    download_trade_validacao(data_dir, client)
+    download_trade_completa(data_dir, client)
 
 
 def get_parser():

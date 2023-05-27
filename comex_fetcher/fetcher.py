@@ -10,10 +10,10 @@ from tqdm import tqdm
 
 from .storage import (
     get_table_filepath,
-    get_trade_completa_filepath,
+    get_trade_unique_filepath,
     get_trade_filepath,
 )
-from .tables import get_url
+from .tables import ARQUIVO_UNICO, TOTAIS_PARA_VALIDACAO, get_url
 
 
 def get_file_metadata(url):
@@ -144,7 +144,7 @@ def trade(data_dir: Path, dataset: str, year: int, client: httpx.Client):
     download_file(url, filepath, client)
 
 
-def trade_completa(data_dir: Path, dataset: str, client: httpx.Client):
+def trade_unique(data_dir: Path, dataset: str, client: httpx.Client):
     """Downloads the file with complete data
 
     Parameters
@@ -154,9 +154,15 @@ def trade_completa(data_dir: Path, dataset: str, client: httpx.Client):
     """
     url = get_url(dataset)
     metadata = get_file_metadata(url)
-    filepath = get_trade_completa_filepath(
+    if dataset in TOTAIS_PARA_VALIDACAO:
+        file_extension = "csv"
+    elif dataset in ARQUIVO_UNICO:
+        file_extension = "zip"
+    filepath = get_trade_unique_filepath(
+        data_dir=data_dir,
         dataset=dataset,
         modified=metadata["last_modified"],
+        file_extension=file_extension,
     )
     if filepath.exists():
         return

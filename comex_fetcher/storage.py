@@ -28,12 +28,13 @@ def get_trade_filepath(
     return data_dir / dataset / filename
 
 
-def get_trade_completa_filepath(
+def get_trade_unique_filepath(
     data_dir: Path,
     dataset: str,
     modified: dt.datetime,
+    file_extension: str,
 ) -> Path:
-    filename = f"{dataset}_{modified:%Y%m%d}.csv"
+    filename = f"{dataset}_{modified:%Y%m%d}.{file_extension}"
     return data_dir / dataset / filename
 
 

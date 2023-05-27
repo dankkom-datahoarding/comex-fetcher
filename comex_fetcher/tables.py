@@ -374,6 +374,10 @@ def get_url(table, **kwargs):
             url = ARQUIVO_UNICO[table]["url"]
         case "exp-mun-completa" | "imp-mun-completa":
             url = ARQUIVO_UNICO[table]["url"]
+        case "exp-validacao" | "imp-validacao":
+            url = TOTAIS_PARA_VALIDACAO[table]["url"]
+        case "exp-mun-validacao" | "imp-mun-validacao":
+            url = TOTAIS_PARA_VALIDACAO[table]["url"]
         case "exp-repetro" | "imp-repetro":
             url = REPETRO_TABLES[table]["url"]
         case "tabelas-auxiliares":
