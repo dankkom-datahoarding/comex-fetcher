@@ -2,11 +2,15 @@
 name = "comex-fetcher"
 version = "0.0.1"
 description = "Fetcher of raw data from the SECEX website."
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+keywords = []
 authors = [
     {name="Daniel Komesu", email="danielkomesu@gmail.com"},
 ]
+classifiers = [
 
-requires-python = ">=3.10"
+]
 
 dependencies = [
     "httpx",
