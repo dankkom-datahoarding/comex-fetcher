@@ -109,18 +109,18 @@ def table(table_name: str, data_dir: Path, client: httpx.Client):
     download_file(url, filepath, client)
 
 
-def tabelas_auxiliares(dirpath: Path, client: httpx.Client):
+def tabelas_auxiliares(data_dir: Path, client: httpx.Client):
     """Downloads tabelas-auxiliares file
 
     Parameters
     ----------
-    dirpath: Path
+    data_dir: Path
         Destination path directory to save file
     """
     url = get_url("tabelas-auxiliares")
     metadata = get_file_metadata(url)
     filepath = get_table_filepath(
-        data_dir=dirpath,
+        data_dir=data_dir,
         table_name="tabelas-auxiliares",
         modified=metadata["last_modified"],
         file_extension="xlsx",
@@ -130,21 +130,12 @@ def tabelas_auxiliares(dirpath: Path, client: httpx.Client):
     download_file(url, filepath, client)
 
 
-def exp(year: int, data_dir: Path, client: httpx.Client):
-    """Downloads exp file
-
-    Parameters
-    ----------
-    year: int
-        exp year to download
-    data_dir: Path
-        Destination path directory to save file
-    """
-    url = get_url("exp", year=year)
+def trade(data_dir: Path, dataset: str, year: int, client: httpx.Client):
+    url = get_url(table=dataset, year=year)
     metadata = get_file_metadata(url)
     filepath = get_trade_filepath(
         data_dir=data_dir,
-        dataset="exp",
+        dataset=dataset,
         year=year,
         modified=metadata["last_modified"],
     )
@@ -153,132 +144,18 @@ def exp(year: int, data_dir: Path, client: httpx.Client):
     download_file(url, filepath, client)
 
 
-def imp(year: int, data_dir: Path, client: httpx.Client):
-    """Downloads imp file
-
-    Parameters
-    ----------
-    year: int
-        imp year to download
-    data_dir: Path
-        Destination path directory to save file
-    """
-    url = get_url("imp", year=year)
-    metadata = get_file_metadata(url)
-    filepath = get_trade_filepath(
-        data_dir=data_dir,
-        dataset="imp",
-        year=year,
-        modified=metadata["last_modified"],
-    )
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def exp_mun(year: int, data_dir: Path, client: httpx.Client):
-    """Downloads exp-mun file
-
-    Parameters
-    ----------
-    year: int
-        exp_mun year to download
-    data_dir: Path
-        Destination path directory to save file
-    """
-    url = get_url("exp-mun", year=year)
-    metadata = get_file_metadata(url)
-    filepath = get_trade_filepath(
-        data_dir=data_dir,
-        dataset="exp-mun",
-        year=year,
-        modified=metadata["last_modified"],
-    )
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def imp_mun(year: int, data_dir: Path, client: httpx.Client):
-    """Downloads imp-mun file
-
-    Parameters
-    ----------
-    year: int
-        imp_mun year to download
-    data_dir: Path
-        Destination path directory to save file
-    """
-    url = get_url("imp-mun", year=year)
-    metadata = get_file_metadata(url)
-    filepath = get_trade_filepath(
-        data_dir=data_dir,
-        dataset="imp-mun",
-        year=year,
-        modified=metadata["last_modified"],
-    )
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def exp_nbm(year: int, data_dir: Path, client: httpx.Client):
-    """Downloads exp-nbm file
-
-    Parameters
-    ----------
-    year: int
-        exp_nbm year to download
-    data_dir: Path
-        Destination path directory to save file
-    """
-    url = get_url("exp-nbm", year=year)
-    metadata = get_file_metadata(url)
-    filepath = get_trade_filepath(
-        data_dir=data_dir,
-        dataset="exp-nbm",
-        year=year,
-        modified=metadata["last_modified"],
-    )
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def imp_nbm(year: int, data_dir: Path, client: httpx.Client):
-    """Downloads imp-nbm file
-
-    Parameters
-    ----------
-    year: int
-        imp_nbm year to download
-    data_dir: Path
-        Destination path directory to save file
-    """
-    url = get_url("imp-nbm", year=year)
-    metadata = get_file_metadata(url)
-    filepath = get_trade_filepath(
-        data_dir=data_dir,
-        dataset="imp-nbm",
-        year=year,
-        modified=metadata["last_modified"],)
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def exp_completa(data_dir: Path, client: httpx.Client):
-    """Downloads the file with complete data of exp-completa
+def trade_completa(data_dir: Path, dataset: str, client: httpx.Client):
+    """Downloads the file with complete data
 
     Parameters
     ----------
     data_dir : Path
         Destination path directory to save file
     """
-    url = get_url("exp-completa")
+    url = get_url(dataset)
     metadata = get_file_metadata(url)
     filepath = get_trade_completa_filepath(
-        dataset="exp-completa",
+        dataset=dataset,
         modified=metadata["last_modified"],
     )
     if filepath.exists():
@@ -286,97 +163,19 @@ def exp_completa(data_dir: Path, client: httpx.Client):
     download_file(url, filepath, client)
 
 
-def imp_completa(data_dir: Path, client: httpx.Client):
-    """Downloads the file with complete data of imp-completa
+def repetro(data_dir: Path, dataset: str, client: httpx.Client):
+    """Downloads the file with complete data of repetro
 
     Parameters
     ----------
     data_dir : Path
         Destination path directory to save file
     """
-    url = get_url("imp-completa")
-    metadata = get_file_metadata(url)
-    filepath = get_trade_completa_filepath(
-        dataset="imp-completa",
-        modified=metadata["last_modified"],
-    )
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def exp_mun_completa(data_dir: Path, client: httpx.Client):
-    """Downloads the file with complete data of exp-mun-completa
-
-    Parameters
-    ----------
-    data_dir : Path
-        Destination path directory to save file
-    """
-    url = get_url("exp-mun-completa")
-    metadata = get_file_metadata(url)
-    filepath = get_trade_completa_filepath(
-        dataset="exp-mun-completa",
-        modified=metadata["last_modified"],
-    )
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def imp_mun_completa(data_dir: Path, client: httpx.Client):
-    """Downloads the file with complete data of imp-mun-completa
-
-    Parameters
-    ----------
-    data_dir : Path
-        Destination path directory to save file
-    """
-    url = get_url("imp-mun-completa")
-    metadata = get_file_metadata(url)
-    filepath = get_trade_completa_filepath(
-        dataset="imp-mun-completa",
-        modified=metadata["last_modified"],
-    )
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def exp_repetro(data_dir: Path, client: httpx.Client):
-    """Downloads the file with complete data of exp_repetro
-
-    Parameters
-    ----------
-    data_dir : Path
-        Destination path directory to save file
-    """
-    url = get_url("exp-repetro")
+    url = get_url(dataset)
     metadata = get_file_metadata(url)
     filepath = get_table_filepath(
         data_dir=data_dir,
-        table_name="exp-repetro",
-        modified=metadata["last_modified"],
-        file_extension="xlsx",
-    )
-    if filepath.exists():
-        return
-    download_file(url, filepath, client)
-
-
-def imp_repetro(data_dir: Path, client: httpx.Client):
-    """Downloads the file with complete data of imp_repetro
-
-    Parameters
-    ----------
-    data_dir : Path
-        Destination path directory to save file
-    """
-    url = get_url("imp-repetro")
-    metadata = get_file_metadata(url)
-    filepath = get_table_filepath(
-        data_dir=data_dir,
-        table_name="imp-repetro",
+        table_name=dataset,
         modified=metadata["last_modified"],
         file_extension="xlsx",
     )

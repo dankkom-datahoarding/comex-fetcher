@@ -4,7 +4,7 @@ from datetime import date
 
 import httpx
 
-from comex_fetcher import fetcher, tables
+from comex_fetcher import fetcher, storage, tables
 
 CURRENT_YEAR = date.today().year
 
@@ -16,43 +16,40 @@ def download_tables(data_dir: pathlib.Path, client: httpx.Client):
 
 
 def download_trade(data_dir: pathlib.Path, client: httpx.Client):
-    for year in range(1997, CURRENT_YEAR + 1):
-        fetcher.exp(year, data_dir, client)
-        fetcher.imp(year, data_dir, client)
+    for dataset in tables.TRADE:
+        start_year, end_year = tables.TRADE[dataset]["year_range"]
+        if end_year is None:
+            end_year = CURRENT_YEAR
+        for year in range(start_year, end_year + 1):
+            fetcher.trade(
+                data_dir=data_dir,
+                dataset=dataset,
+                year=year,
+                client=client,
+            )
 
 
 def download_trade_completa(data_dir: pathlib.Path, client: httpx.Client):
-    fetcher.exp_completa(data_dir, client)
-    fetcher.imp_completa(data_dir, client)
-
-
-def download_trade_mun(data_dir: pathlib.Path, client: httpx.Client):
-    for year in range(1997, CURRENT_YEAR + 1):
-        fetcher.exp_mun(year, data_dir, client)
-        fetcher.imp_mun(year, data_dir, client)
-
-
-def download_trade_mun_completa(data_dir: pathlib.Path, client: httpx.Client):
-    fetcher.exp_mun_completa(data_dir, client)
-    fetcher.imp_mun_completa(data_dir, client)
-
-
-def download_trade_nbm(data_dir: pathlib.Path, client: httpx.Client):
-    for year in range(1989, 1997):
-        fetcher.exp_nbm(year, data_dir, client)
-        fetcher.imp_nbm(year, data_dir, client)
+    for dataset in tables.ARQUIVO_UNICO:
+        url = tables.get_url(dataset)
+        metadata = fetcher.get_file_metadata(url)
+        filepath = storage.get_trade_completa_filepath(
+            dataset=dataset,
+            modified=metadata["last_modified"],
+        )
+        if filepath.exists():
+            continue
+        fetcher.download_file(url, filepath, client)
 
 
 def download_repetro(data_dir: pathlib.Path, client: httpx.Client):
-    fetcher.exp_repetro(data_dir, client)
-    fetcher.imp_repetro(data_dir, client)
+    for dataset in tables.REPETRO_TABLES:
+        fetcher.repetro(data_dir=data_dir, dataset=dataset, client=client)
 
 
 def download_all(data_dir: pathlib.Path, client: httpx.Client):
     download_tables(data_dir, client)
     download_trade(data_dir, client)
-    download_trade_mun(data_dir, client)
-    download_trade_nbm(data_dir, client)
     download_repetro(data_dir, client)
 
 
@@ -98,12 +95,6 @@ def main():
                 download_trade(args.output, client)
             case "trade-completa":
                 download_trade_completa(args.output, client)
-            case "trade-mun":
-                download_trade_mun(args.output, client)
-            case "trade-mun-completa":
-                download_trade_mun_completa(args.output, client)
-            case "trade-nbm":
-                download_trade_nbm(args.output, client)
             case "repetro":
                 download_repetro(args.output, client)
             case _:
