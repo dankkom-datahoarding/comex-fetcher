@@ -1,5 +1,100 @@
 CANON_URL = "https://balanca.economia.gov.br/balanca/bd/"
 
+TRADE = {
+    "exp": {
+        "description": "Exportação",
+        "server_dir": CANON_URL + "comexstat-bd/ncm/",
+        "server_filename": "EXP_{year}.csv",
+        "pkey": [
+            "CO_ANO",
+            "CO_MES",
+            "CO_NCM",
+            "CO_UNID",
+            "CO_PAIS",
+            "SG_UF_NCM",
+            "CO_VIA",
+            "CO_URF",
+        ],
+        "name": "",
+        "year_range": [1997, None],
+    },
+    "imp": {
+        "description": "Importação",
+        "server_dir": CANON_URL + "comexstat-bd/ncm/",
+        "server_filename": "IMP_{year}.csv",
+        "pkey": [
+            "CO_ANO",
+            "CO_MES",
+            "CO_NCM",
+            "CO_UNID",
+            "CO_PAIS",
+            "SG_UF_NCM",
+            "CO_VIA",
+            "CO_URF",
+        ],
+        "name": "",
+        "year_range": [1997, None],
+    },
+    "exp-mun": {
+        "description": "Exportação dos municípios",
+        "server_dir": CANON_URL + "comexstat-bd/mun/",
+        "server_filename": "EXP_{year}_MUN.csv",
+        "pkey": [
+            "CO_ANO",
+            "CO_MES",
+            "SH4",
+            "CO_PAIS",
+            "SG_UF_MUN",
+            "CO_MUN",
+        ],
+        "name": "",
+        "year_range": [1997, None],
+    },
+    "imp-mun": {
+        "description": "Importação dos municípios",
+        "server_dir": CANON_URL + "comexstat-bd/mun/",
+        "server_filename": "IMP_{year}_MUN.csv",
+        "pkey": [
+            "CO_ANO",
+            "CO_MES",
+            "SH4",
+            "CO_PAIS",
+            "SG_UF_MUN",
+            "CO_MUN",
+        ],
+        "name": "",
+        "year_range": [1997, None],
+    },
+    "exp-nbm": {
+        "description": "Exportação histórica",
+        "server_dir": CANON_URL + "comexstat-bd/nbm/",
+        "server_filename": "EXP_{year}_NBM.csv",
+        "pkey": [
+            "CO_ANO",
+            "CO_MES",
+            "CO_NBM",
+            "CO_PAIS",
+            "SG_UF",
+        ],
+        "name": "",
+        "year_range": [1989, 1996],
+    },
+    "imp-nbm": {
+        "description": "Importação histórica",
+        "server_dir": CANON_URL + "comexstat-bd/nbm/",
+        "server_filename": "IMP_{year}_NBM.csv",
+        "pkey": [
+            "CO_ANO",
+            "CO_MES",
+            "CO_NBM",
+            "CO_PAIS",
+            "SG_UF",
+        ],
+        "name": "",
+        "year_range": [1989, 1996],
+    },
+}
+
 TABLES = {
     "ncm": {
         "description": "Códigos NCM e descrições.",
@@ -270,18 +365,11 @@ ARQUIVO_UNICO = {
 def get_url(table, **kwargs):
     year = kwargs.get("year", None)
     match table:
-        case "exp":
-            url = CANON_URL + f"comexstat-bd/ncm/EXP_{year}.csv"
-        case "imp":
-            url = CANON_URL + f"comexstat-bd/ncm/IMP_{year}.csv"
-        case "exp-mun":
-            url = CANON_URL + f"comexstat-bd/mun/EXP_{year}_MUN.csv"
-        case "imp-mun":
-            url = CANON_URL + f"comexstat-bd/mun/IMP_{year}_MUN.csv"
-        case "exp-nbm":
-            url = CANON_URL + f"comexstat-bd/nbm/EXP_{year}_NBM.csv"
-        case "imp-nbm":
-            url = CANON_URL + f"comexstat-bd/nbm/IMP_{year}_NBM.csv"
+        case "exp" | "imp" | "exp-mun" | "imp-mun" | "exp-nbm" | "imp-nbm":
+            url = (
+                TRADE[table]["server_dir"]
+                + TRADE[table]["server_filename"].format(year=year)
+            )
         case "exp-completa" | "imp-completa":
             url = ARQUIVO_UNICO[table]["url"]
         case "exp-mun-completa" | "imp-mun-completa":
