@@ -1,16 +1,18 @@
-[tool.poetry]
+[project]
 name = "comex-fetcher"
 version = "0.0.1"
 description = "Fetcher of raw data from the SECEX website."
-authors = ["Daniel Komesu <danielkomesu@gmail.com>"]
+authors = [
+    {name="Daniel Komesu", email="danielkomesu@gmail.com"},
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-tqdm = "^4.64.0"
-httpx = "^0.23.0"
+requires-python = ">=3.10"
 
-[tool.poetry.dev-dependencies]
+dependencies = [
+    "httpx",
+    "tqdm",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
