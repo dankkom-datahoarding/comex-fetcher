@@ -193,7 +193,9 @@ REPETRO_TABLES = {
 
 OTHER_TABLES = {
     "tabelas-auxiliares": {
-        "description": "Tabelas de Correlações de Códigos e Classificações em Excel",
+        "description": (
+            "Tabelas de Correlações de Códigos e Classificações em Excel"
+        ),
         "server_filename": "TABELAS_AUXILIARES.xlsx",
         "pkey": [],
         "name": "Tabelas de Correlações de Códigos e Classificações",
@@ -280,7 +282,9 @@ def get_url(table, **kwargs):
             url = CANON_URL + f"comexstat-bd/nbm/EXP_{year}_NBM.csv"
         case "imp-nbm":
             url = CANON_URL + f"comexstat-bd/nbm/IMP_{year}_NBM.csv"
-        case "exp-completa" | "imp-completa" | "exp-mun-completa" | "imp-mun-completa":
+        case "exp-completa" | "imp-completa":
+            url = ARQUIVO_UNICO[table]["url"]
+        case "exp-mun-completa" | "imp-mun-completa":
             url = ARQUIVO_UNICO[table]["url"]
         case "exp-repetro" | "imp-repetro":
             url = REPETRO_TABLES[table]["url"]
